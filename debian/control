@@ -21,7 +21,8 @@ Depends:
  ${misc:Depends},
  php-cli (>= 8.1),
  php-pdo, 
- php-pdo-mysql|php-pdo-pgsql|php-pdo-sqlite|php-pdo-sqlserver
+ php-pdo-mysql|php-pdo-pgsql|php-pdo-sqlite|php-pdo-sqlserver,
+ composer-debian
 Suggests:
  php-mysql | php-sqlite3 | php-pgsql,
 Description: FluentPDO - PHP 8.1+ Edition with modern features
