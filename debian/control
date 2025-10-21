@@ -6,6 +6,8 @@ Build-Depends:
  debhelper-compat (= 13),
  php-cli,
  composer,
+ jq,
+ moreutils
 Standards-Version: 4.7.0
 Homepage: https://github.com/VitexSoftware/php-vitexsoftware-fluentpdo
 Rules-Requires-Root: no
