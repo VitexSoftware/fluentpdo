@@ -1,0 +1,23 @@
+{
+    "php.version": "8.2",
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#225d9c",
+        "activityBar.background": "#225d9c",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#dd629d",
+        "activityBarBadge.foreground": "#15202b",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#225d9c",
+        "statusBar.background": "#194472",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#225d9c",
+        "statusBarItem.remoteBackground": "#194472",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#194472",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#19447299",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#194472"
+}

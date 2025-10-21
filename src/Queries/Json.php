@@ -1,41 +1,46 @@
 <?php
-namespace Envms\FluentPDO\Queries;
 
-use Envms\FluentPDO\{Query, Utilities};
+declare(strict_types=1);
 
 /**
- * Class Json
+ * This file is part of the EaseCore package.
  *
- * @package Envms\FluentPDO\Queries
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Envms\FluentPDO\Queries;
+
+use Envms\FluentPDO\Query;
+
+/**
+ * Class Json.
  */
 class Json extends Common
 {
+    protected mixed $fromTable;
 
-    /** @var mixed */
-    protected $fromTable;
-    /** @var mixed */
-    protected $fromAlias;
-    /** @var boolean */
-    protected $convertTypes = false;
+    protected mixed $fromAlias;
+
+    protected bool $convertTypes = false;
 
     /**
-     * Json constructor
-     *
-     * @param Query  $fluent
-     * @param string $table
+     * Json constructor.
      */
     public function __construct(Query $fluent, string $table)
     {
         $clauses = [
-            'SELECT'   => ', ',
-            'JOIN'     => [$this, 'getClauseJoin'],
-            'WHERE'    => [$this, 'getClauseWhere'],
+            'SELECT' => ', ',
+            'JOIN' => [$this, 'getClauseJoin'],
+            'WHERE' => [$this, 'getClauseWhere'],
             'GROUP BY' => ',',
-            'HAVING'   => ' AND ',
+            'HAVING' => ' AND ',
             'ORDER BY' => ', ',
-            'LIMIT'    => null,
-            'OFFSET'   => null,
-            "\n--"     => "\n--",
+            'LIMIT' => null,
+            'OFFSET' => null,
+            "\n--" => "\n--",
         ];
 
         parent::__construct($fluent, $clauses);
@@ -52,5 +57,4 @@ class Json extends Common
             $this->convertTypes = true;
         }
     }
-
 }

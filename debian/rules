@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	# No build step needed for pure PHP library
+
+override_dh_auto_test:
+	# Skip tests during package build to avoid dependency issues
+
+override_dh_auto_install:
+	mkdir -p debian/tmp
+	jq '.version = "'`dpkg-parsechangelog | sed -n 's/^Version: //p'| sed 's/~.*//' `'"'  debian/composer.json |sponge debian/tmp/composer.json
+	dh_auto_install

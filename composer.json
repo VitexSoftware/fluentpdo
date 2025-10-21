@@ -1,26 +1,63 @@
 {
-    "name": "vitexsoftware/fluentpdo",
-    "description": "FluentPDO is a quick and light PHP library for rapid query building. It features a smart join builder, which automatically creates table joins.",
-    "keywords": ["db", "database", "dbal", "pdo", "fluent", "query", "builder", "mysql", "oracle"],
-    "homepage": "https://github.com/envms/fluentpdo",
-    "license": ["Apache-2.0", "GPL-2.0+"],
-    "authors": [
-        {
-            "name": "envms",
-            "homepage": "https://env.ms"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Envms\\FluentPDO\\": "src/"
-        }
+  "name": "vitexsoftware/fluentpdo",
+  "description": "FluentPDO - PHP 8.1+ Edition. A modernized fork with strict typing, union types, and enhanced features. Quick and light PHP library for rapid query building with smart join builder.",
+  "type": "library",
+  "keywords": [
+    "db",
+    "database",
+    "dbal",
+    "pdo",
+    "fluent",
+    "query",
+    "builder",
+    "mysql",
+    "oracle",
+    "mssql",
+    "php8",
+    "php81",
+    "strict-types",
+    "union-types",
+    "modern-php"
+  ],
+  "homepage": "https://github.com/VitexSoftware/php-vitexsoftware-fluentpdo",
+  "license": [
+    "Apache-2.0",
+    "GPL-2.0-or-later"
+  ],
+  "authors": [
+    {
+      "name": "envms",
+      "homepage": "https://env.ms"
     },
-    "require": {
-        "php": ">=7.1",
-        "ext-pdo": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^8.0",
-        "envms/fluent-test": "^1.0"
+    {
+      "name": "vitex",
+      "homepage": "https://vitexsoftware.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Envms\\FluentPDO\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.1",
+    "ext-pdo": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^12.4",
+    "envms/fluent-test": "^1.0",
+    "roave/security-advisories": "dev-latest",
+    "phpstan/phpstan": "*",
+    "friendsofphp/php-cs-fixer": "^3.87",
+    "ergebnis/composer-normalize": "^2.48",
+    "ergebnis/php-cs-fixer-config": "^6.54"
+  },
+  "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true
+    }
+  },
+  "replace": {
+    "envms/fluentpdo": "^2.2"
+  }
 }

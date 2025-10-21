@@ -1,22 +1,31 @@
 <?php
 
-require __DIR__ . '/../_resources/init.php';
-
-use PHPUnit\Framework\TestCase;
-use Envms\FluentPDO\Query;
+declare(strict_types=1);
 
 /**
- * Class DeleteTest
+ * This file is part of the EaseCore package.
+ *
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+require __DIR__.'/../_resources/init.php';
+
+use Envms\FluentPDO\Query;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Class DeleteTest.
  *
  * @covers \Envms\FluentPDO\Queries\Delete
  */
 class DeleteTest extends TestCase
 {
+    protected Query $fluent;
 
-    /** @var Query */
-    protected $fluent;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         global $pdo;
 
@@ -25,7 +34,7 @@ class DeleteTest extends TestCase
         $this->fluent = new Query($pdo);
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
         $query = $this->fluent->deleteFrom('user')
             ->where('id', 1);
@@ -34,7 +43,7 @@ class DeleteTest extends TestCase
         self::assertEquals(['0' => '1'], $query->getParameters());
     }
 
-    public function testDeleteIgnore()
+    public function testDeleteIgnore(): void
     {
         $query = $this->fluent->deleteFrom('user')
             ->ignore()
@@ -44,7 +53,7 @@ class DeleteTest extends TestCase
         self::assertEquals(['0' => '1'], $query->getParameters());
     }
 
-    public function testDeleteOrderLimit()
+    public function testDeleteOrderLimit(): void
     {
         $query = $this->fluent->deleteFrom('user')
             ->where('id', 2)
@@ -55,7 +64,7 @@ class DeleteTest extends TestCase
         self::assertEquals(['0' => '2'], $query->getParameters());
     }
 
-    public function testDeleteExpanded()
+    public function testDeleteExpanded(): void
     {
         $query = $this->fluent->delete('t1, t2')
             ->from('t1')
@@ -63,12 +72,14 @@ class DeleteTest extends TestCase
             ->innerJoin('t3 ON t2.id = t3.id')
             ->where('t1.id', 1);
 
-        self::assertEquals('DELETE t1, t2 FROM t1 INNER JOIN t2 ON t1.id = t2.id  INNER JOIN t3 ON t2.id = t3.id WHERE t1.id = ?',
-            $query->getQuery(false));
+        self::assertEquals(
+            'DELETE t1, t2 FROM t1 INNER JOIN t2 ON t1.id = t2.id  INNER JOIN t3 ON t2.id = t3.id WHERE t1.id = ?',
+            $query->getQuery(false),
+        );
         self::assertEquals(['0' => '1'], $query->getParameters());
     }
 
-    public function testDeleteShortcut()
+    public function testDeleteShortcut(): void
     {
         $query = $this->fluent->deleteFrom('user', 1);
 
@@ -76,7 +87,7 @@ class DeleteTest extends TestCase
         self::assertEquals(['0' => '1'], $query->getParameters());
     }
 
-    public function testAddFromAfterDelete()
+    public function testAddFromAfterDelete(): void
     {
         $query = $this->fluent->delete('user', 1)->from('user');
 
