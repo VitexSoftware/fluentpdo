@@ -110,6 +110,9 @@ class Utilities
             case 'boolean':
                 $conversion = ($value) ? 1 : 0;
                 break;
+            case 'array':
+                $conversion = json_encode($value);
+                break;
             default:
                 $conversion = $value;
                 break;

@@ -390,6 +390,11 @@ abstract class Base implements IteratorAggregate
 
             if (is_array($clauses)) {
                 foreach ($clauses as $key => $value) {
+                    // Convert arrays to JSON strings for PDO compatibility
+                    if (is_array($value)) {
+                        $value = json_encode($value);
+                    }
+                    
                     if (strpos($key, ':') === 0) { // these are named params e.g. (':name' => 'Mark')
                         $parameters += [$key => $value];
                     } else {
@@ -397,6 +402,10 @@ abstract class Base implements IteratorAggregate
                     }
                 }
             } elseif ($clauses !== false && $clauses !== null) {
+                // Convert arrays to JSON strings for PDO compatibility
+                if (is_array($clauses)) {
+                    $clauses = json_encode($clauses);
+                }
                 $parameters[] = $clauses;
             }
         }
