@@ -1,62 +1,80 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the EaseCore package.
+ *
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Envms\FluentPDO;
 
+use Envms\FluentPDO\Queries\Delete;
+use Envms\FluentPDO\Queries\Insert;
+use Envms\FluentPDO\Queries\Select;
+use Envms\FluentPDO\Queries\Update;
 use PDO;
-use Envms\FluentPDO\Queries\{Insert, Select, Update, Delete};
 
 /**
  * FluentPDO is a quick and light PHP library for rapid query building. It features a smart join builder, which automatically creates table joins.
  *
  * For more information see readme.md
  *
- * @link      https://github.com/envms/fluentpdo
+ * @see      https://github.com/envms/fluentpdo
+ *
  * @author    Chris Bornhoft, start@env.ms
  * @copyright 2012-2020 envms - Chris Bornhoft, Marek Lichtner
  * @license   https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License, version 3.0
  */
 
 /**
- * Class Query
+ * Class Query.
+ *
  * @method debug(Queries\Base $param)
  */
 class Query
 {
-    /** @var PDO */
-    protected $pdo;
-    /** @var Structure */
-    protected $structure;
-
     /** @var bool|callable */
-    public $debug = false;
-
-    /** @var bool - Determines whether to convert types when fetching rows from Select */
-    public $convertRead = false;
-    /** @var bool - Determines whether to convert types within Base::buildParameters() */
-    public $convertWrite = false;
-
-    /** @var bool - If a query errors, this determines how to handle it */
-    public $exceptionOnError = false;
-
-    /** @var string */
-    protected $table;
-    /** @var string */
-    protected $prefix;
-    /** @var string */
-    protected $separator;
+    public mixed $debug = false;
 
     /**
-     * Query constructor
-     *
-     * @param PDO        $pdo
-     * @param ?Structure $structure
+     * @var bool - Determines whether to convert types when fetching rows from Select
      */
-    public function __construct(PDO $pdo, ?Structure $structure = null)
+    public bool $convertRead = false;
+
+    /**
+     * @var bool - Determines whether to convert types within Base::buildParameters()
+     */
+    public bool $convertWrite = false;
+
+    /**
+     * @var bool - If a query errors, this determines how to handle it
+     */
+    public bool $exceptionOnError = false;
+
+    protected \PDO $pdo;
+
+    protected Structure $structure;
+
+    protected string $table;
+
+    protected string $prefix;
+
+    protected string $separator;
+
+    /**
+     * Query constructor.
+     */
+    public function __construct(\PDO $pdo, ?Structure $structure = null)
     {
         $this->pdo = $pdo;
 
         // if exceptions are already activated in PDO, activate them in Fluent as well
-        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_EXCEPTION) {
+        if ($this->pdo->getAttribute(\PDO::ATTR_ERRMODE) === \PDO::ERRMODE_EXCEPTION) {
             $this->throwExceptionOnError(true);
         }
 
@@ -64,12 +82,10 @@ class Query
     }
 
     /**
-     * Create SELECT query from $table
+     * Create SELECT query from $table.
      *
      * @param ?string $table      - db table name
      * @param ?int    $primaryKey - return one row by primary key
-     *
-     * @return Select
      *
      * @throws Exception
      */
@@ -84,19 +100,16 @@ class Query
             $tableTable = $query->getFromTable();
             $tableAlias = $query->getFromAlias();
             $primaryKeyName = $this->structure->getPrimaryKey($tableTable);
-            $query = $query->where("$tableAlias.$primaryKeyName", $primaryKey);
+            $query = $query->where("{$tableAlias}.{$primaryKeyName}", $primaryKey);
         }
 
         return $query;
     }
 
     /**
-     * Create INSERT INTO query
+     * Create INSERT INTO query.
      *
-     * @param ?string $table
-     * @param array   $values - accepts one or multiple rows, @see docs
-     *
-     * @return Insert
+     * @param array $values - accepts one or multiple rows, @see docs
      *
      * @throws Exception
      */
@@ -109,13 +122,9 @@ class Query
     }
 
     /**
-     * Create UPDATE query
+     * Create UPDATE query.
      *
-     * @param ?string      $table
      * @param array|string $set
-     * @param ?int         $primaryKey
-     *
-     * @return Update
      *
      * @throws Exception
      */
@@ -127,6 +136,7 @@ class Query
         $query = new Update($this, $table);
 
         $query->set($set);
+
         if ($primaryKey) {
             $primaryKeyName = $this->getStructure()->getPrimaryKey($this->table);
             $query = $query->where($primaryKeyName, $primaryKey);
@@ -136,12 +146,9 @@ class Query
     }
 
     /**
-     * Create DELETE query
+     * Create DELETE query.
      *
-     * @param ?string $table
-     * @param ?int    $primaryKey delete only row by primary key
-     *
-     * @return Delete
+     * @param ?int $primaryKey delete only row by primary key
      *
      * @throws Exception
      */
@@ -161,38 +168,27 @@ class Query
     }
 
     /**
-     * Create DELETE FROM query
-     *
-     * @param ?string $table
-     * @param ?int    $primaryKey
-     *
-     * @return Delete
+     * Create DELETE FROM query.
      */
     public function deleteFrom(?string $table = null, ?int $primaryKey = null): Delete
     {
-        $args = func_get_args();
+        $args = \func_get_args();
 
-        return call_user_func_array([$this, 'delete'], $args);
+        return \call_user_func_array([$this, 'delete'], $args);
     }
 
-    /**
-     * @return PDO
-     */
-    public function getPdo(): PDO
+    public function getPdo(): \PDO
     {
         return $this->pdo;
     }
 
-    /**
-     * @return Structure
-     */
     public function getStructure(): Structure
     {
         return $this->structure;
     }
 
     /**
-     * Closes the \PDO connection to the database
+     * Closes the \PDO connection to the database.
      */
     public function close(): void
     {
@@ -200,17 +196,13 @@ class Query
     }
 
     /**
-     * Set table name comprised of prefix.separator.table
-     *
-     * @param ?string $table
-     * @param string  $prefix
-     * @param string  $separator
-     *
-     * @return $this
+     * Set table name comprised of prefix.separator.table.
      *
      * @throws Exception
+     *
+     * @return $this
      */
-    public function setTableName(?string $table = '', string $prefix = '', string $separator = ''): Query
+    public function setTableName(?string $table = '', string $prefix = '', string $separator = ''): self
     {
         if ($table !== null) {
             $this->prefix = $prefix;
@@ -225,67 +217,42 @@ class Query
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getFullTableName(): string
     {
-        return $this->prefix . $this->separator . $this->table;
+        return $this->prefix.$this->separator.$this->table;
     }
 
-    /**
-     * @return string
-     */
     public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    /**
-     * @return string
-     */
     public function getSeparator(): string
     {
         return $this->separator;
     }
 
-    /**
-     * @return string
-     */
     public function getTable(): string
     {
         return $this->table;
     }
 
-    /**
-     * @param bool $flag
-     */
     public function throwExceptionOnError(bool $flag): void
     {
         $this->exceptionOnError = $flag;
     }
 
-    /**
-     * @param bool $read
-     * @param bool $write
-     */
     public function convertTypes(bool $read, bool $write): void
     {
         $this->convertRead = $read;
         $this->convertWrite = $write;
     }
 
-    /**
-     * @param bool $flag
-     */
     public function convertReadTypes(bool $flag): void
     {
         $this->convertRead = $flag;
     }
 
-    /**
-     * @param bool $flag
-     */
     public function convertWriteTypes(bool $flag): void
     {
         $this->convertWrite = $flag;

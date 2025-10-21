@@ -1,20 +1,30 @@
 <?php
 
-require __DIR__ . '/_resources/init.php';
-
-use PHPUnit\Framework\TestCase;
-use Envms\FluentPDO\{Query,Utilities};
+declare(strict_types=1);
 
 /**
- * Class UtilitiesTest
+ * This file is part of the EaseCore package.
+ *
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+require __DIR__.'/_resources/init.php';
+
+use Envms\FluentPDO\Query;
+use Envms\FluentPDO\Utilities;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Class UtilitiesTest.
  */
 class UtilitiesTest extends TestCase
 {
+    protected Envms\FluentPDO\Query $fluent;
 
-    /** @var Envms\FluentPDO\Query */
-    protected $fluent;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         global $pdo;
 
@@ -23,9 +33,8 @@ class UtilitiesTest extends TestCase
         $this->fluent = new Query($pdo);
     }
 
-    public function testFluentUtil()
+    public function testFluentUtil(): void
     {
-
         $value = Utilities::toUpperWords('one');
         $value2 = Utilities::toUpperWords(' one ');
         $value3 = Utilities::toUpperWords('oneTwo');
@@ -41,7 +50,7 @@ class UtilitiesTest extends TestCase
         self::assertEquals('ONE TWO THREE', $value6);
     }
 
-    public function testFormatQuery()
+    public function testFormatQuery(): void
     {
         $query = $this->fluent
             ->from('user')
@@ -53,7 +62,7 @@ class UtilitiesTest extends TestCase
         self::assertEquals("SELECT user.*\nFROM user\nWHERE id > ?\nORDER BY name", $formattedQuery);
     }
 
-    public function testConvertToNativeType()
+    public function testConvertToNativeType(): void
     {
         $query = $this->fluent
             ->from('user')
@@ -69,7 +78,7 @@ class UtilitiesTest extends TestCase
         self::assertEquals(['id' => 1], $forceInt);
     }
 
-    public function testConvertSqlWriteValues()
+    public function testConvertSqlWriteValues(): void
     {
         $valueArray = Utilities::convertSqlWriteValues(['string', 1, 2, false, true, null, 'false']);
         $value1 = Utilities::convertSqlWriteValues(false);
@@ -80,7 +89,7 @@ class UtilitiesTest extends TestCase
         self::assertEquals(1, $value2);
     }
 
-    public function testisCountable()
+    public function testisCountable(): void
     {
         $selectQuery = $this->fluent
             ->from('user')
@@ -92,8 +101,7 @@ class UtilitiesTest extends TestCase
             ->deleteFrom('user')
             ->where('id', 1);
 
-        self::assertEquals(true, Utilities::isCountable($selectQuery));
-        self::assertEquals(false, Utilities::isCountable($deleteQuery));
+        self::assertTrue(Utilities::isCountable($selectQuery));
+        self::assertFalse(Utilities::isCountable($deleteQuery));
     }
-
 }

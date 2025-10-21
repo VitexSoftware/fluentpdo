@@ -1,22 +1,31 @@
 <?php
 
-require __DIR__ . '/../_resources/init.php';
-
-use PHPUnit\Framework\TestCase;
-use Envms\FluentPDO\Query;
+declare(strict_types=1);
 
 /**
- * Class UpdateTest
+ * This file is part of the EaseCore package.
+ *
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+require __DIR__.'/../_resources/init.php';
+
+use Envms\FluentPDO\Query;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Class UpdateTest.
  *
  * @covers \Envms\FluentPDO\Queries\Update
  */
 class UpdateTest extends TestCase
 {
+    protected Query $fluent;
 
-    /** @var Query */
-    protected $fluent;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         global $pdo;
 
@@ -25,7 +34,7 @@ class UpdateTest extends TestCase
         $this->fluent = new Query($pdo);
     }
 
-    public function testUpdate()
+    public function testUpdate(): void
     {
         $query = $this->fluent->update('country')->set('name', 'aikavolS')->where('id', 1);
         $query->execute();
@@ -42,7 +51,7 @@ class UpdateTest extends TestCase
         self::assertEquals(['id' => '1', 'name' => 'Slovakia', 'details' => '{"gdp": 90.75, "pop": 5456300, "name": "Slovensko"}'], $query3->fetch());
     }
 
-    public function testUpdateLiteral()
+    public function testUpdateLiteral(): void
     {
         $query = $this->fluent->update('article')->set('published_at', new Envms\FluentPDO\Literal('NOW()'))->where('user_id', 1);
 
@@ -50,7 +59,7 @@ class UpdateTest extends TestCase
         self::assertEquals(['0' => '1'], $query->getParameters());
     }
 
-    public function testUpdateFromArray()
+    public function testUpdateFromArray(): void
     {
         $query = $this->fluent->update('user')->set(['name' => 'keraM', '`type`' => 'author'])->where('id', 1);
 
@@ -58,30 +67,34 @@ class UpdateTest extends TestCase
         self::assertEquals([0 => 'keraM', 1 => 'author', 2 => '1'], $query->getParameters());
     }
 
-    public function testUpdateLeftJoin()
+    public function testUpdateLeftJoin(): void
     {
         $query = $this->fluent->update('user')
             ->outerJoin('country ON country.id = user.country_id')
             ->set(['name' => 'keraM', '`type`' => 'author'])
             ->where('id', 1);
 
-        self::assertEquals('UPDATE user OUTER JOIN country ON country.id = user.country_id SET name = ?, `type` = ? WHERE id = ?',
-            $query->getQuery(false));
+        self::assertEquals(
+            'UPDATE user OUTER JOIN country ON country.id = user.country_id SET name = ?, `type` = ? WHERE id = ?',
+            $query->getQuery(false),
+        );
         self::assertEquals([0 => 'keraM', 1 => 'author', 2 => '1'], $query->getParameters());
     }
 
-    public function testUpdateSmartJoin()
+    public function testUpdateSmartJoin(): void
     {
         $query = $this->fluent->update('user')
             ->set(['type' => 'author'])
             ->where('country.id', 1);
 
-        self::assertEquals('UPDATE user LEFT JOIN country ON country.id = user.country_id SET type = ? WHERE country.id = ?',
-            $query->getQuery(false));
+        self::assertEquals(
+            'UPDATE user LEFT JOIN country ON country.id = user.country_id SET type = ? WHERE country.id = ?',
+            $query->getQuery(false),
+        );
         self::assertEquals([0 => 'author', 1 => '1'], $query->getParameters());
     }
 
-    public function testUpdateOrderLimit()
+    public function testUpdateOrderLimit(): void
     {
         $query = $this->fluent->update('user')
             ->set(['type' => 'author'])
@@ -93,7 +106,7 @@ class UpdateTest extends TestCase
         self::assertEquals([0 => 'author', 1 => '2'], $query->getParameters());
     }
 
-    public function testUpdateShortCut()
+    public function testUpdateShortCut(): void
     {
         $query = $this->fluent->update('user', ['type' => 'admin'], 1);
 
@@ -101,7 +114,7 @@ class UpdateTest extends TestCase
         self::assertEquals([0 => 'admin', 1 => '1'], $query->getParameters());
     }
 
-    public function testUpdateZero()
+    public function testUpdateZero(): void
     {
         $this->fluent->update('article')->set('content', '')->where('id', 1)->execute();
         $user = $this->fluent->from('article')->where('id', 1)->fetch();
@@ -118,35 +131,40 @@ class UpdateTest extends TestCase
         self::assertEquals('ID: 1 - content: content 1', $printQuery2);
     }
 
-    public function testUpdateWhere()
+    public function testUpdateWhere(): void
     {
         $query = $this->fluent->update('users')
-            ->set("`users`.`active`", 1)
-            ->where("`country`.`name`", 'Slovakia')
-            ->where("`users`.`name`", 'Marek');
+            ->set('`users`.`active`', 1)
+            ->where('`country`.`name`', 'Slovakia')
+            ->where('`users`.`name`', 'Marek');
 
         $query2 = $this->fluent->update('users')
-            ->set("[users].[active]", 1)
-            ->where("[country].[name]", 'Slovakia')
-            ->where("[users].[name]", 'Marek');
+            ->set('[users].[active]', 1)
+            ->where('[country].[name]', 'Slovakia')
+            ->where('[users].[name]', 'Marek');
 
-        self::assertEquals('UPDATE users LEFT JOIN country ON country.id = users.country_id SET `users`.`active` = ? WHERE `country`.`name` = ? AND `users`.`name` = ?',
-            $query->getQuery(false));
+        self::assertEquals(
+            'UPDATE users LEFT JOIN country ON country.id = users.country_id SET `users`.`active` = ? WHERE `country`.`name` = ? AND `users`.`name` = ?',
+            $query->getQuery(false),
+        );
         self::assertEquals([0 => '1', 1 => 'Slovakia', 2 => 'Marek'], $query->getParameters());
-        self::assertEquals('UPDATE users LEFT JOIN country ON country.id = users.country_id SET [users].[active] = ? WHERE [country].[name] = ? AND [users].[name] = ?',
-            $query2->getQuery(false));
+        self::assertEquals(
+            'UPDATE users LEFT JOIN country ON country.id = users.country_id SET [users].[active] = ? WHERE [country].[name] = ? AND [users].[name] = ?',
+            $query2->getQuery(false),
+        );
         self::assertEquals([0 => '1', 1 => 'Slovakia', 2 => 'Marek'], $query2->getParameters());
     }
 
-    public function testUpdateNamedParameters()
+    public function testUpdateNamedParameters(): void
     {
         $query = $this->fluent->update('users')
-            ->set("`users`.`active`", [':active' => 1])
-            ->where("`country`.`name` = :country", [':country' => 'Slovakia']);
+            ->set('`users`.`active`', [':active' => 1])
+            ->where('`country`.`name` = :country', [':country' => 'Slovakia']);
 
-        self::assertEquals('UPDATE users LEFT JOIN country ON country.id = users.country_id SET `users`.`active` = :active WHERE `country`.`name` = :country',
-            $query->getQuery(false));
+        self::assertEquals(
+            'UPDATE users LEFT JOIN country ON country.id = users.country_id SET `users`.`active` = :active WHERE `country`.`name` = :country',
+            $query->getQuery(false),
+        );
         self::assertEquals([':active' => '1', ':country' => 'Slovakia'], $query->getParameters());
     }
-
 }

@@ -1,41 +1,47 @@
 <?php
 
-namespace Envms\FluentPDO\Queries;
-
-use Envms\FluentPDO\{Exception, Query};
+declare(strict_types=1);
 
 /**
- * DELETE query builder
+ * This file is part of the EaseCore package.
  *
- * @method Delete  leftJoin(string $statement) add LEFT JOIN to query
- *                        ($statement can be 'table' name only or 'table:' means back reference)
- * @method Delete  innerJoin(string $statement) add INNER JOIN to query
- *                        ($statement can be 'table' name only or 'table:' means back reference)
- * @method Delete  from(string $table) add LIMIT to query
- * @method Delete  orderBy(string $column) add ORDER BY to query
- * @method Delete  limit(int $limit) add LIMIT to query
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Envms\FluentPDO\Queries;
+
+use Envms\FluentPDO\Exception;
+use Envms\FluentPDO\Query;
+
+/**
+ * DELETE query builder.
+ *
+ * @method Delete innerJoin(string $statement) add INNER JOIN to query
+ *                                             ($statement can be 'table' name only or 'table:' means back reference)
+ * @method Delete from(string $table)          add LIMIT to query
+ * @method Delete limit(int $limit)            add LIMIT to query
+ * @method Delete orderBy(string $column)      add ORDER BY to query
  */
 class Delete extends Common
 {
-
-    private $ignore = false;
+    private bool $ignore = false;
 
     /**
-     * Delete constructor
-     *
-     * @param Query  $fluent
-     * @param string $table
+     * Delete constructor.
      */
     public function __construct(Query $fluent, string $table)
     {
         $clauses = [
             'DELETE FROM' => [$this, 'getClauseDeleteFrom'],
-            'DELETE'      => [$this, 'getClauseDelete'],
-            'FROM'        => null,
-            'JOIN'        => [$this, 'getClauseJoin'],
-            'WHERE'       => [$this, 'getClauseWhere'],
-            'ORDER BY'    => ', ',
-            'LIMIT'       => null,
+            'DELETE' => [$this, 'getClauseDelete'],
+            'FROM' => null,
+            'JOIN' => [$this, 'getClauseJoin'],
+            'WHERE' => [$this, 'getClauseWhere'],
+            'ORDER BY' => ', ',
+            'LIMIT' => null,
         ];
 
         parent::__construct($fluent, $clauses);
@@ -45,7 +51,7 @@ class Delete extends Common
     }
 
     /**
-     * Forces delete operation to fail silently
+     * Forces delete operation to fail silently.
      *
      * @return Delete
      */
@@ -54,6 +60,28 @@ class Delete extends Common
         $this->ignore = true;
 
         return $this;
+    }
+
+    /**
+     * Execute DELETE query.
+     *
+     * @throws Exception
+     *
+     * @return bool
+     */
+    public function execute()
+    {
+        if (empty($this->statements['WHERE'])) {
+            throw new Exception('Delete queries must contain a WHERE clause to prevent unwanted data loss');
+        }
+
+        $result = parent::execute();
+
+        if ($result) {
+            return $result->rowCount();
+        }
+
+        return false;
     }
 
     /**
@@ -73,32 +101,11 @@ class Delete extends Common
     }
 
     /**
-     * Execute DELETE query
-     *
-     * @throws Exception
-     *
-     * @return bool
-     */
-    public function execute()
-    {
-        if (empty($this->statements['WHERE'])) {
-            throw new Exception('Delete queries must contain a WHERE clause to prevent unwanted data loss');
-        }
-
-        $result = parent::execute();
-        if ($result) {
-            return $result->rowCount();
-        }
-
-        return false;
-    }
-
-    /**
      * @return string
      */
     protected function getClauseDelete()
     {
-        return 'DELETE' . ($this->ignore ? " IGNORE" : '') . ' ' . $this->statements['DELETE'];
+        return 'DELETE'.($this->ignore ? ' IGNORE' : '').' '.$this->statements['DELETE'];
     }
 
     /**
@@ -106,7 +113,6 @@ class Delete extends Common
      */
     protected function getClauseDeleteFrom()
     {
-        return 'DELETE' . ($this->ignore ? " IGNORE" : '') . ' FROM ' . $this->statements['DELETE FROM'];
+        return 'DELETE'.($this->ignore ? ' IGNORE' : '').' FROM '.$this->statements['DELETE FROM'];
     }
-
 }

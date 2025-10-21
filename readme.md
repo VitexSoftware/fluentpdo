@@ -1,6 +1,20 @@
-# FluentPDO [![Build Status](https://secure.travis-ci.org/envms/fluentpdo.png?branch=master)](http://travis-ci.org/envms/fluentpdo) [![Maintainability](https://api.codeclimate.com/v1/badges/19210ca91c7055b89705/maintainability)](https://codeclimate.com/github/fpdo/fluentpdo/maintainability)
+# FluentPDO - PHP 8.1+ Edition
+
+**A modernized fork of the original FluentPDO project, updated for PHP 8.1+ with modern type declarations and enhanced features.**
 
 FluentPDO is a PHP SQL query builder using PDO. It's a quick and light library featuring a smart join builder, which automatically creates table joins for you.
+
+## About This Fork
+
+This is a modernized fork of the original [envms/fluentpdo](https://github.com/envms/fluentpdo) project. Since the original project has been inactive for 3+ years (last commit in 2021), this fork provides:
+
+- **PHP 8.1+ compatibility** with modern type declarations
+- **Strict typing** throughout the codebase
+- **Union types** and **mixed types** where appropriate  
+- **Typed properties** for better IDE support
+- **Array parameter handling** with automatic JSON serialization
+- **Enhanced error handling** and debugging capabilities
+- **Updated dependencies** and development tools
 
 ## Features
 
@@ -9,25 +23,22 @@ FluentPDO is a PHP SQL query builder using PDO. It's a quick and light library f
 - Ability to build complex SELECT, INSERT, UPDATE & DELETE queries with little code
 - Type hinting for magic methods with code completion in smart IDEs
 
-## Versions
+## PHP Version Requirements
 
-#### Version 2.x
+**This fork requires PHP 8.1 or higher.**
 
-The stable release of FluentPDO and actively maintained. Officially supports PHP 7.3 to PHP 8.0,
-but it can work with previous versions of PHP 7.
+### What's New in This PHP 8.1+ Edition
 
-#### Version 1.x
+- **Modern Type System**: Full use of PHP 8.1+ type declarations including union types
+- **Strict Types**: All files use `declare(strict_types=1)` for better type safety
+- **Array Handling**: Automatic JSON serialization of array parameters to prevent SQL errors
+- **Enhanced Performance**: Better memory usage and performance through strict typing
+- **Developer Experience**: Improved IDE support with proper type hints and autocomplete
+- **Future Ready**: Prepared for upcoming PHP versions
 
-The legacy release of FluentPDO. It is no longer supported and will not be maintained or updated.
-This version works with PHP 5.4 to 7.1.
+### Migrating from Original FluentPDO
 
-#### Version 3.x - alpha
-
-This version is a full rewrite of Fluent from the ground up. Its main advantage is
-significantly less memory usage and much greater performance in query building. It also places
-a few additional restrictions to make queries easier to read and maintain. Documentation has also
-been a very common request, and version 3 is being fully documented alongside development.
-Details and metrics will be posted once available.
+If you're upgrading from the original FluentPDO (v2.x), this version maintains API compatibility while requiring PHP 8.1+. The main changes are internal improvements and type safety enhancements.
 
 ## Reference
 
@@ -37,34 +48,42 @@ Details and metrics will be posted once available.
 
 ### Composer
 
-The preferred way to install FluentPDO is via [composer](http://getcomposer.org/).
+The preferred way to install this PHP 8.1+ edition of FluentPDO is via [composer](http://getcomposer.org/).
 
-Add the following line in your `composer.json` file:
-
-	"require": {
-		...
-		"envms/fluentpdo": "^2.2.0"
-	}
-
-update your dependencies with `composer update`, and you're done!
-
-### Download Zip
-
-If you prefer not to use composer, download the latest release, create the directory `Envms/FluentPDO` in your library directory, and drop this repository into it. Finally, add:
-
-```php
-require '[lib-dir]/Envms/FluentPDO/src/Query.php';
+```bash
+composer require vitexsoftware/fluentpdo
 ```
 
-to the top of your application. **Note:** You will need an autoloader to use FluentPDO without changing its source code.
+Or add the following line in your `composer.json` file:
+
+```json
+{
+    "require": {
+        "vitexsoftware/fluentpdo": "^3.0"
+    }
+}
+```
+
+Then run `composer update` and you're done!
+
+### Requirements
+
+- **PHP 8.1+** (required)
+- **PDO extension** (required)
+- Any PDO-compatible database (MySQL, PostgreSQL, SQLite, etc.)
 
 ## Getting Started
 
 Create a new PDO instance, and pass the instance to FluentPDO:
 
 ```php
+<?php
+declare(strict_types=1);
+
+use Envms\FluentPDO\Query;
+
 $pdo = new PDO('mysql:dbname=fluentdb', 'user', 'password');
-$fluent = new \Envms\FluentPDO\Query($pdo);
+$fluent = new Query($pdo);
 ```
 
 Then, creating queries is quick and easy:
@@ -159,7 +178,9 @@ $query = $fluent->insertInto('article', $values)->execute(); // shorter version
 ##### UPDATE
 
 ```php
-$set = array('published_at' => new FluentLiteral('NOW()'));
+use Envms\FluentPDO\Literal;
+
+$set = ['published_at' => new Literal('NOW()')];
 
 $query = $fluent->update('article')->set($set)->where('id', 1)->execute();
 $query = $fluent->update('article', $set, 1)->execute(); // shorter version if updating one row by primary key
@@ -173,6 +194,43 @@ $query = $fluent->deleteFrom('article', 1)->execute(); // shorter version if del
 ```
 
 ***Note**: INSERT, UPDATE and DELETE queries will only run after you call `->execute()`*
+
+## Modern PHP 8.1+ Features
+
+### Array Parameter Handling
+
+This edition automatically handles array parameters by converting them to JSON strings:
+
+```php
+// Arrays are automatically converted to JSON
+$data = [
+    'name' => 'John Doe',
+    'tags' => ['php', 'mysql', 'programming'],  // Automatically converts to JSON
+    'metadata' => ['created' => '2025-01-01', 'active' => true]
+];
+
+$fluent->insertInto('users', $data)->execute();
+```
+
+### Strict Type Declarations
+
+All classes use strict typing for better performance and error detection:
+
+```php
+<?php
+declare(strict_types=1);
+
+// Your code here...
+```
+
+### Enhanced IDE Support
+
+With full type declarations, you get better autocomplete and error detection in modern IDEs.
+
+## Credits
+
+- **Original FluentPDO**: [envms/fluentpdo](https://github.com/envms/fluentpdo) by envms
+- **PHP 8.1+ Modernization**: [VitexSoftware](https://vitexsoftware.com)
 
 ## License
 

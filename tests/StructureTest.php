@@ -1,19 +1,29 @@
 <?php
 
-require __DIR__ . '/_resources/init.php';
-
-use PHPUnit\Framework\TestCase;
-use Envms\FluentPDO\Structure;
+declare(strict_types=1);
 
 /**
- * Class StructureTest
+ * This file is part of the EaseCore package.
+ *
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+require __DIR__.'/_resources/init.php';
+
+use Envms\FluentPDO\Structure;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Class StructureTest.
  *
  * @covers \Envms\FluentPDO\Structure
  */
 class StructureTest extends TestCase
 {
-
-    public function testBasicKey()
+    public function testBasicKey(): void
     {
         $structure = new Structure();
 
@@ -21,7 +31,7 @@ class StructureTest extends TestCase
         self::assertEquals('user_id', $structure->getForeignKey('user'));
     }
 
-    public function testCustomKey()
+    public function testCustomKey(): void
     {
         $structure = new Structure('whatAnId', '%s_\xid');
 
@@ -29,7 +39,7 @@ class StructureTest extends TestCase
         self::assertEquals('user_\xid', $structure->getForeignKey('user'));
     }
 
-    public function testMethodKey()
+    public function testMethodKey(): void
     {
         $structure = new Structure('id', ['StructureTest', 'suffix']);
 
@@ -38,13 +48,10 @@ class StructureTest extends TestCase
     }
 
     /**
-     * @param $table
-     *
      * @return string
      */
     public static function suffix($table)
     {
-        return $table . '_id';
+        return $table.'_id';
     }
-
 }

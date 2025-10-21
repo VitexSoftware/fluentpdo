@@ -1,39 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the EaseCore package.
+ *
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Envms\FluentPDO\Queries;
 
-use Envms\FluentPDO\{Exception, Literal, Query};
+use Envms\FluentPDO\Exception;
+use Envms\FluentPDO\Literal;
+use Envms\FluentPDO\Query;
 
-/** INSERT query builder
+/**
+ * INSERT query builder.
  */
 class Insert extends Base
 {
+    private array $columns = [];
 
-    /** @var array */
-    private $columns = [];
+    private array $firstValue = [];
 
-    /** @var array */
-    private $firstValue = [];
+    private bool $ignore = false;
 
-    /** @var bool */
-    private $ignore = false;
-    /** @var bool */
-    private $delayed = false;
+    private bool $delayed = false;
 
     /**
      * InsertQuery constructor.
      *
-     * @param Query     $fluent
-     * @param string    $table
-     * @param           $values
+     * @param string $table
      *
      * @throws Exception
      */
     public function __construct(Query $fluent, $table, $values)
     {
         $clauses = [
-            'INSERT INTO'             => [$this, 'getClauseInsertInto'],
-            'VALUES'                  => [$this, 'getClauseValues'],
+            'INSERT INTO' => [$this, 'getClauseInsertInto'],
+            'VALUES' => [$this, 'getClauseValues'],
             'ON DUPLICATE KEY UPDATE' => [$this, 'getClauseOnDuplicateKeyUpdate'],
         ];
         parent::__construct($fluent, $clauses);
@@ -43,7 +51,7 @@ class Insert extends Base
     }
 
     /**
-     * Force insert operation to fail silently
+     * Force insert operation to fail silently.
      *
      * @return Insert
      */
@@ -54,7 +62,8 @@ class Insert extends Base
         return $this;
     }
 
-    /** Force insert operation delay support
+    /**
+     * Force insert operation delay support.
      *
      * @return Insert
      */
@@ -66,24 +75,24 @@ class Insert extends Base
     }
 
     /**
-     * Add VALUES
+     * Add VALUES.
      *
-     * @param $values
+     * @throws Exception
      *
      * @return Insert
-     * @throws Exception
      */
     public function values($values)
     {
-        if (!is_array($values)) {
+        if (!\is_array($values)) {
             throw new Exception('Param VALUES for INSERT query must be array');
         }
 
         $first = current($values);
-        if (is_string(key($values))) {
+
+        if (\is_string(key($values))) {
             // is one row array
             $this->addOneValue($values);
-        } elseif (is_array($first) && is_string(key($first))) {
+        } elseif (\is_array($first) && \is_string(key($first))) {
             // this is multi values
             foreach ($values as $oneValue) {
                 $this->addOneValue($oneValue);
@@ -94,7 +103,7 @@ class Insert extends Base
     }
 
     /**
-     * Add ON DUPLICATE KEY UPDATE
+     * Add ON DUPLICATE KEY UPDATE.
      *
      * @param array $values
      *
@@ -103,20 +112,21 @@ class Insert extends Base
     public function onDuplicateKeyUpdate($values)
     {
         $this->statements['ON DUPLICATE KEY UPDATE'] = array_merge(
-            $this->statements['ON DUPLICATE KEY UPDATE'], $values
+            $this->statements['ON DUPLICATE KEY UPDATE'],
+            $values,
         );
 
         return $this;
     }
 
     /**
-     * Execute insert query
+     * Execute insert query.
      *
      * @param mixed $sequence
      *
      * @throws Exception
      *
-     * @return int|bool - Last inserted primary key
+     * @return bool|int - Last inserted primary key
      */
     public function execute($sequence = null)
     {
@@ -152,7 +162,7 @@ class Insert extends Base
      */
     protected function getClauseInsertInto()
     {
-        return 'INSERT' . ($this->ignore ? " IGNORE" : '') . ($this->delayed ? " DELAYED" : '') . ' INTO ' . $this->statements['INSERT INTO'];
+        return 'INSERT'.($this->ignore ? ' IGNORE' : '').($this->delayed ? ' DELAYED' : '').' INTO '.$this->statements['INSERT INTO'];
     }
 
     /**
@@ -161,20 +171,20 @@ class Insert extends Base
     protected function getClauseValues()
     {
         $valuesArray = [];
+
         foreach ($this->statements['VALUES'] as $rows) {
             // literals should not be parametrized.
             // They are commonly used to call engine functions or literals.
             // Eg: NOW(), CURRENT_TIMESTAMP etc
             $placeholders = array_map([$this, 'parameterGetValue'], $rows);
-            $valuesArray[] = '(' . implode(', ', $placeholders) . ')';
+            $valuesArray[] = '('.implode(', ', $placeholders).')';
         }
 
         $columns = implode(', ', $this->columns);
         $values = implode(', ', $valuesArray);
 
-        return " ($columns) VALUES $values";
+        return " ({$columns}) VALUES {$values}";
     }
-
 
     /**
      * @return string
@@ -182,39 +192,36 @@ class Insert extends Base
     protected function getClauseOnDuplicateKeyUpdate()
     {
         $result = [];
+
         foreach ($this->statements['ON DUPLICATE KEY UPDATE'] as $key => $value) {
-            $result[] = "$key = " . $this->parameterGetValue($value);
+            $result[] = "{$key} = ".$this->parameterGetValue($value);
         }
 
-        return ' ON DUPLICATE KEY UPDATE ' . implode(', ', $result);
+        return ' ON DUPLICATE KEY UPDATE '.implode(', ', $result);
     }
 
     /**
-     * @param $param
-     *
      * @return string
      */
     protected function parameterGetValue($param)
     {
-        return $param instanceof Literal ? (string)$param : '?';
+        return $param instanceof Literal ? (string) $param : '?';
     }
 
     /**
      * Removes all Literal instances from the argument
-     * since they are not to be used as PDO parameters but rather injected directly into the query
-     *
-     * @param $statements
+     * since they are not to be used as PDO parameters but rather injected directly into the query.
      *
      * @return array
      */
     protected function filterLiterals($statements)
     {
-        $f = function ($item) {
+        $f = static function ($item) {
             return !$item instanceof Literal;
         };
 
-        return array_map(function ($item) use ($f) {
-            if (is_array($item)) {
+        return array_map(static function ($item) use ($f) {
+            if (\is_array($item)) {
                 return array_filter($item, $f);
             }
 
@@ -222,14 +229,11 @@ class Insert extends Base
         }, array_filter($statements, $f));
     }
 
-    /**
-     * @return array
-     */
     protected function buildParameters(): array
     {
         $this->parameters = array_merge(
             $this->filterLiterals($this->statements['VALUES']),
-            $this->filterLiterals($this->statements['ON DUPLICATE KEY UPDATE'])
+            $this->filterLiterals($this->statements['ON DUPLICATE KEY UPDATE']),
         );
 
         return parent::buildParameters();
@@ -240,24 +244,27 @@ class Insert extends Base
      *
      * @throws Exception
      */
-    private function addOneValue($oneValue)
+    private function addOneValue($oneValue): void
     {
         // check if all $keys are strings
         foreach ($oneValue as $key => $value) {
-            if (!is_string($key)) {
+            if (!\is_string($key)) {
                 throw new Exception('INSERT query: All keys of value array have to be strings.');
             }
         }
+
         if (!$this->firstValue) {
             $this->firstValue = $oneValue;
         }
+
         if (!$this->columns) {
             $this->columns = array_keys($oneValue);
         }
-        if ($this->columns != array_keys($oneValue)) {
+
+        if ($this->columns !== array_keys($oneValue)) {
             throw new Exception('INSERT query: All VALUES have to same keys (columns).');
         }
+
         $this->statements['VALUES'][] = $oneValue;
     }
-
 }

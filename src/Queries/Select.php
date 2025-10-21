@@ -1,39 +1,47 @@
 <?php
 
-namespace Envms\FluentPDO\Queries;
-
-use Envms\FluentPDO\{Exception, Query, Utilities};
+declare(strict_types=1);
 
 /**
- * SELECT query builder
+ * This file is part of the EaseCore package.
+ *
+ * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Envms\FluentPDO\Queries;
+
+use Envms\FluentPDO\Exception;
+use Envms\FluentPDO\Query;
+use Envms\FluentPDO\Utilities;
+
+/**
+ * SELECT query builder.
  */
 class Select extends Common implements \Countable
 {
+    private mixed $fromTable;
 
-    /** @var mixed */
-    private $fromTable;
-    /** @var mixed */
-    private $fromAlias;
+    private mixed $fromAlias;
 
     /**
      * SelectQuery constructor.
-     *
-     * @param Query     $fluent
-     * @param           $from
      */
-    function __construct(Query $fluent, $from)
+    public function __construct(Query $fluent, $from)
     {
         $clauses = [
-            'SELECT'   => ', ',
-            'FROM'     => null,
-            'JOIN'     => [$this, 'getClauseJoin'],
-            'WHERE'    => [$this, 'getClauseWhere'],
+            'SELECT' => ', ',
+            'FROM' => null,
+            'JOIN' => [$this, 'getClauseJoin'],
+            'WHERE' => [$this, 'getClauseWhere'],
             'GROUP BY' => ',',
-            'HAVING'   => ' AND ',
+            'HAVING' => ' AND ',
             'ORDER BY' => ', ',
-            'LIMIT'    => null,
-            'OFFSET'   => null,
-            "\n--"     => "\n--"
+            'LIMIT' => null,
+            'OFFSET' => null,
+            "\n--" => "\n--",
         ];
         parent::__construct($fluent, $clauses);
 
@@ -43,13 +51,12 @@ class Select extends Common implements \Countable
         $this->fromAlias = end($fromParts);
 
         $this->statements['FROM'] = $from;
-        $this->statements['SELECT'][] = $this->fromAlias . '.*';
+        $this->statements['SELECT'][] = $this->fromAlias.'.*';
         $this->joins[] = $this->fromAlias;
     }
 
     /**
      * @param mixed $columns
-     * @param bool  $overrideDefault
      *
      * @return $this
      */
@@ -67,7 +74,7 @@ class Select extends Common implements \Countable
     }
 
     /**
-     * Return table name from FROM clause
+     * Return table name from FROM clause.
      */
     public function getFromTable()
     {
@@ -75,7 +82,7 @@ class Select extends Common implements \Countable
     }
 
     /**
-     * Return table alias from FROM clause
+     * Return table alias from FROM clause.
      */
     public function getFromAlias()
     {
@@ -83,9 +90,7 @@ class Select extends Common implements \Countable
     }
 
     /**
-     * Returns a single column
-     *
-     * @param int $columnNumber
+     * Returns a single column.
      *
      * @throws Exception
      *
@@ -101,10 +106,9 @@ class Select extends Common implements \Countable
     }
 
     /**
-     * Fetch first row or column
+     * Fetch first row or column.
      *
      * @param string $column - column name or empty string for the whole row
-     * @param int    $cursorOrientation
      *
      * @throws Exception
      *
@@ -127,22 +131,18 @@ class Select extends Common implements \Countable
         }
 
         if ($row && $column !== null) {
-            if (is_object($row)) {
+            if (\is_object($row)) {
                 return $row->{$column};
-            } else {
-                return $row[$column];
             }
+
+            return $row[$column];
         }
 
         return $row;
     }
 
     /**
-     * Fetch pairs
-     *
-     * @param $key
-     * @param $value
-     * @param $object
+     * Fetch pairs.
      *
      * @throws Exception
      *
@@ -150,14 +150,15 @@ class Select extends Common implements \Countable
      */
     public function fetchPairs($key, $value, $object = false)
     {
-        if (($s = $this->select("$key, $value", true)->asObject($object)->execute()) !== false) {
+        if (($s = $this->select("{$key}, {$value}", true)->asObject($object)->execute()) !== false) {
             return $s->fetchAll(\PDO::FETCH_KEY_PAIR);
         }
 
         return $s;
     }
 
-    /** Fetch all row
+    /**
+     * Fetch all row.
      *
      * @param string $index      - specify index column. Allows for data organization by field using 'field[]'
      * @param string $selectOnly - select columns which could be fetched
@@ -175,26 +176,26 @@ class Select extends Common implements \Countable
         }
 
         if ($selectOnly) {
-            $this->select($index . ', ' . $selectOnly, true);
+            $this->select($index.', '.$selectOnly, true);
         }
 
         if ($index) {
             return $this->buildSelectData($index, $indexAsArray);
-        } else {
-            if (($result = $this->execute()) !== false) {
-                if ($this->fluent->convertRead === true) {
-                    return Utilities::stringToNumeric($result, $result->fetchAll());
-                } else {
-                    return $result->fetchAll();
-                }
+        }
+
+        if (($result = $this->execute()) !== false) {
+            if ($this->fluent->convertRead === true) {
+                return Utilities::stringToNumeric($result, $result->fetchAll());
             }
 
-            return false;
+            return $result->fetchAll();
         }
+
+        return false;
     }
 
     /**
-     * \Countable interface doesn't break current select query
+     * \Countable interface doesn't break current select query.
      *
      * @throws Exception
      *
@@ -205,7 +206,7 @@ class Select extends Common implements \Countable
     {
         $fluent = clone $this;
 
-        return (int)$fluent->select('COUNT(*)', true)->fetchColumn();
+        return (int) $fluent->select('COUNT(*)', true)->fetchColumn();
     }
 
     /**
@@ -217,15 +218,12 @@ class Select extends Common implements \Countable
     {
         if ($this->fluent->convertRead === true) {
             return new \ArrayIterator($this->fetchAll());
-        } else {
-            return $this->execute();
         }
+
+        return $this->execute();
     }
 
     /**
-     * @param $index
-     * @param $indexAsArray
-     *
      * @return array
      */
     private function buildSelectData($index, $indexAsArray)
@@ -233,7 +231,7 @@ class Select extends Common implements \Countable
         $data = [];
 
         foreach ($this as $row) {
-            if (is_object($row)) {
+            if (\is_object($row)) {
                 $key = $row->{$index};
             } else {
                 $key = $row[$index];
