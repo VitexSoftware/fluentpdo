@@ -1,2 +1,8 @@
 /.idea/
 /vendor/
+/nbproject/
+/debian/debhelper-build-stamp
+/debian/php-vitexsoftware-fluentpdo.debhelper.log
+/debian/php-vitexsoftware-fluentpdo.substvars
+/debian/.debhelper/
+/debian/php-vitexsoftware-fluentpdo/

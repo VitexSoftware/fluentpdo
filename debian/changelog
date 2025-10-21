@@ -1,0 +1,9 @@
+php-vitexsoftware-fluentpdo (3.0.0-1) unstable; urgency=medium
+
+  * Initial Debian packaging of FluentPDO - PHP 8.1+ Edition
+  * Modernized fork of FluentPDO with strict typing and union types
+  * Requires PHP 8.1+ with PDO extension
+  * Smart join builder with automatic table joins
+  * Modern type declarations and enhanced features
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Mon, 21 Oct 2024 22:18:00 +0000
