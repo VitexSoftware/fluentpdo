@@ -1,4 +1,4 @@
-php-vitexsoftware-fluentpdo (3.0.0-1) unstable; urgency=medium
+php-vitexsoftware-fluentpdo (3.0.0) unstable; urgency=medium
 
   * Initial Debian packaging of FluentPDO - PHP 8.1+ Edition
   * Modernized fork of FluentPDO with strict typing and union types
