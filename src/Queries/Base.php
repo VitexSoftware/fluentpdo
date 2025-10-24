@@ -360,13 +360,13 @@ abstract class Base implements \IteratorAggregate
                         $value = json_encode($value);
                     }
 
-                    if (str_starts_with($key, ':')) { // these are named params e.g. (':name' => 'Mark')
+                    if (\is_string($key) && str_starts_with($key, ':')) { // these are named params e.g. (':name' => 'Mark')
                         $parameters += [$key => $value];
                     } else {
                         $parameters[] = $value;
                     }
                 }
-            } elseif ($clauses !== false && $clauses !== null) {
+            }
                 // Convert arrays to JSON strings for PDO compatibility
                 if (\is_array($clauses)) {
                     $clauses = json_encode($clauses);
