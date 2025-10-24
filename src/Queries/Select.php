@@ -214,7 +214,7 @@ class Select extends Common implements \Countable
      *
      * @return \ArrayIterator|\PDOStatement
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         if ($this->fluent->convertRead === true) {
             return new \ArrayIterator($this->fetchAll());
