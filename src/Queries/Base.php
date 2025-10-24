@@ -366,7 +366,7 @@ abstract class Base implements \IteratorAggregate
                         $parameters[] = $value;
                     }
                 }
-            }
+            } elseif ($clauses !== false && $clauses !== null) {
                 // Convert arrays to JSON strings for PDO compatibility
                 if (\is_array($clauses)) {
                     $clauses = json_encode($clauses);
