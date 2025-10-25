@@ -4,10 +4,9 @@ Priority: optional
 Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
 Build-Depends:
  debhelper-compat (= 13),
- php-cli,
- composer,
- jq,
- moreutils
+ pkg-php-tools,
+ phpunit,
+ php-cli
 Standards-Version: 4.7.0
 Homepage: https://github.com/VitexSoftware/php-vitexsoftware-fluentpdo
 Rules-Requires-Root: no
@@ -19,12 +18,13 @@ Architecture: all
 Multi-Arch: foreign
 Depends:
  ${misc:Depends},
- php-cli (>= 8.1),
- php-pdo, 
- php-pdo-mysql|php-pdo-pgsql|php-pdo-sqlite|php-pdo-sqlserver,
- composer-debian
+ ${phpcomposer:Debian-require}
+Provides:
+ php-envms-fluentpdo
+Replaces:
+ php-envms-fluentpdo
 Suggests:
- php-mysql | php-sqlite3 | php-pgsql,
+ php-mysql | php-sqlite3 | php-pgsql
 Description: FluentPDO - PHP 8.1+ Edition with modern features
  FluentPDO is a modernized PHP SQL query builder library using PDO with a smart
  join builder that automatically creates table joins. This version (3.x) requires

@@ -1,5 +1,2 @@
-src/*.php			usr/share/php/FluentPDO/
-src/Queries/*.php		usr/share/php/FluentPDO/Queries/
-debian/tmp/composer.json	usr/share/php/FluentPDO/
-readme.md			usr/share/doc/php-vitexsoftware-fluentpdo/
-CHANGELOG.md			usr/share/doc/php-vitexsoftware-fluentpdo/
+src/*                   usr/share/php/Envms/FluentPDO/
+autoload.php            usr/share/php/Envms/FluentPDO/

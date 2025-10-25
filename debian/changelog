@@ -1,9 +1,16 @@
+php-vitexsoftware-fluentpdo (3.0.3) UNRELEASED; urgency=medium
+
+  * Debian loading issues fixed
+
+ -- Vítězslav Vitex Dvořák <info@vitexsoftware.cz>  Sat, 25 Oct 2025 13:51:14 +0200
+
 php-vitexsoftware-fluentpdo (3.0.0) unstable; urgency=medium
 
+  [ Vítězslav Dvořák ]
   * Initial Debian packaging of FluentPDO - PHP 8.1+ Edition
   * Modernized fork of FluentPDO with strict typing and union types
   * Requires PHP 8.1+ with PDO extension
   * Smart join builder with automatic table joins
   * Modern type declarations and enhanced features
 
- -- Vítězslav Dvořák <info@vitexsoftware.cz>  Mon, 21 Oct 2024 22:18:00 +0000
+ -- Vítězslav Vitex Dvořák <info@vitexsoftware.cz>  Sat, 25 Oct 2025 13:50:49 +0200
