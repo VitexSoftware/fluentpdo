@@ -8,3 +8,4 @@ debian/php-vitexsoftware-fluentpdo.substvars
 nbproject/
 
 
+.build/php-cs-fixer/.php-cs-fixer.cache

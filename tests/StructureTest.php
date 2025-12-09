@@ -48,6 +48,8 @@ class StructureTest extends TestCase
     }
 
     /**
+     * @param mixed $table
+     *
      * @return string
      */
     public static function suffix($table)

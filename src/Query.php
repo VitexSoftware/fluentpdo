@@ -38,7 +38,9 @@ use PDO;
  */
 class Query
 {
-    /** @var bool|callable */
+    /**
+     * @var bool|callable
+     */
     public mixed $debug = false;
 
     /**
@@ -55,15 +57,10 @@ class Query
      * @var bool - If a query errors, this determines how to handle it
      */
     public bool $exceptionOnError = false;
-
     protected \PDO $pdo;
-
     protected Structure $structure;
-
     protected string $table;
-
     protected string $prefix;
-
     protected string $separator;
 
     /**

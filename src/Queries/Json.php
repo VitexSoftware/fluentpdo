@@ -21,9 +21,7 @@ use Envms\FluentPDO\Query;
 class Json extends Common
 {
     protected mixed $fromTable;
-
     protected mixed $fromAlias;
-
     protected bool $convertTypes = false;
 
     /**

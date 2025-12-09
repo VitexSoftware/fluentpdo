@@ -16,7 +16,7 @@ namespace Envms\FluentPDO;
 /**
  * SQL literal value.
  */
-class Literal
+class Literal implements \Stringable
 {
     protected string $value = '';
 

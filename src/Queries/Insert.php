@@ -23,17 +23,15 @@ use Envms\FluentPDO\Query;
 class Insert extends Base
 {
     private array $columns = [];
-
     private array $firstValue = [];
-
     private bool $ignore = false;
-
     private bool $delayed = false;
 
     /**
      * InsertQuery constructor.
      *
      * @param string $table
+     * @param mixed  $values
      *
      * @throws Exception
      */
@@ -76,6 +74,8 @@ class Insert extends Base
 
     /**
      * Add VALUES.
+     *
+     * @param mixed $values
      *
      * @throws Exception
      *
@@ -201,6 +201,8 @@ class Insert extends Base
     }
 
     /**
+     * @param mixed $param
+     *
      * @return string
      */
     protected function parameterGetValue($param)
@@ -211,6 +213,8 @@ class Insert extends Base
     /**
      * Removes all Literal instances from the argument
      * since they are not to be used as PDO parameters but rather injected directly into the query.
+     *
+     * @param mixed $statements
      *
      * @return array
      */

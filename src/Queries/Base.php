@@ -26,35 +26,28 @@ use PDOStatement;
 /**
  * Base query builder.
  */
-abstract class Base implements \IteratorAggregate
+abstract class Base implements \IteratorAggregate, \Stringable
 {
     protected Query $fluent;
-
     protected null|bool|\PDOStatement $result;
 
     /**
      * @var array - definition clauses
      */
     protected array $clauses = [];
-
     protected array $statements = [];
-
     protected array $parameters = [];
-
     protected Regex $regex;
-
     protected string $message = '';
-
     protected int $currentFetchMode;
-
     private float $totalTime;
-
     private float $executionTime;
-
     private bool $object = false;
 
     /**
      * BaseQuery constructor.
+     *
+     * @param mixed $clauses
      */
     protected function __construct(Query $fluent, $clauses)
     {
@@ -213,6 +206,8 @@ abstract class Base implements \IteratorAggregate
     /**
      * Add statement for all clauses except WHERE.
      *
+     * @param mixed $clause
+     * @param mixed $statement
      * @param array $parameters
      *
      * @return $this
@@ -242,6 +237,7 @@ abstract class Base implements \IteratorAggregate
     /**
      * Add statement for all kind of clauses.
      *
+     * @param mixed  $statement
      * @param string $separator  - should be AND or OR
      * @param array  $parameters
      *
@@ -268,6 +264,8 @@ abstract class Base implements \IteratorAggregate
 
     /**
      * Remove all prev defined statements.
+     *
+     * @param mixed $clause
      *
      * @return $this
      */
@@ -380,6 +378,8 @@ abstract class Base implements \IteratorAggregate
     }
 
     /**
+     * @param mixed $value
+     *
      * @return string
      */
     protected function quote($value)
@@ -430,6 +430,8 @@ abstract class Base implements \IteratorAggregate
     }
 
     /**
+     * @param mixed $clause
+     *
      * @return bool
      */
     private function clauseNotEmpty($clause)

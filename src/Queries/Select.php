@@ -23,11 +23,12 @@ use Envms\FluentPDO\Utilities;
 class Select extends Common implements \Countable
 {
     private mixed $fromTable;
-
     private mixed $fromAlias;
 
     /**
      * SelectQuery constructor.
+     *
+     * @param mixed $from
      */
     public function __construct(Query $fluent, $from)
     {
@@ -144,6 +145,10 @@ class Select extends Common implements \Countable
     /**
      * Fetch pairs.
      *
+     * @param mixed $key
+     * @param mixed $value
+     * @param mixed $object
+     *
      * @throws Exception
      *
      * @return array|\PDOStatement
@@ -224,6 +229,9 @@ class Select extends Common implements \Countable
     }
 
     /**
+     * @param mixed $index
+     * @param mixed $indexAsArray
+     *
      * @return array
      */
     private function buildSelectData($index, $indexAsArray)

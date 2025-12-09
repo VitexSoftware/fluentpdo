@@ -280,6 +280,8 @@ abstract class Common extends Base
     }
 
     /**
+     * @param mixed $statement
+     *
      * @return bool
      */
     protected function isEscapedJoin($statement)
@@ -294,6 +296,8 @@ abstract class Common extends Base
     /**
      * Statement can contain more tables (e.g. "table1.table2:table3:").
      *
+     * @param mixed $clause
+     * @param mixed $statement
      * @param array $parameters
      *
      * @return $this
@@ -344,6 +348,9 @@ abstract class Common extends Base
     /**
      * Create join string.
      *
+     * @param mixed  $clause
+     * @param mixed  $mainTable
+     * @param mixed  $joinTable
      * @param string $joinAlias
      *
      * @return string
@@ -438,6 +445,8 @@ abstract class Common extends Base
     }
 
     /**
+     * @param mixed $statement
+     *
      * @return array
      */
     private function setJoinNameAlias($statement)
@@ -458,6 +467,9 @@ abstract class Common extends Base
     }
 
     /**
+     * @param mixed $table
+     * @param mixed $joinItem
+     *
      * @return bool
      */
     private static function matchTableWithJoin($table, $joinItem)
@@ -466,6 +478,12 @@ abstract class Common extends Base
     }
 
     /**
+     * @param mixed $clause
+     * @param mixed $statement
+     * @param mixed $parameters
+     * @param mixed $joinAlias
+     * @param mixed $joinTable
+     *
      * @return $this
      */
     private function addRawJoins($clause, $statement, $parameters, $joinAlias, $joinTable)
@@ -501,6 +519,13 @@ abstract class Common extends Base
     }
 
     /**
+     * @param mixed $clause
+     * @param mixed $parameters
+     * @param mixed $mainTable
+     * @param mixed $joinItem
+     * @param mixed $lastItem
+     * @param mixed $joinAlias
+     *
      * @return mixed
      */
     private function applyTableJoin($clause, $parameters, $mainTable, $joinItem, $lastItem, $joinAlias)

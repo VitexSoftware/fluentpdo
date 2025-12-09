@@ -19,7 +19,6 @@ namespace Envms\FluentPDO;
 class Structure
 {
     private string $primaryKey;
-
     private string $foreignKey;
 
     /**

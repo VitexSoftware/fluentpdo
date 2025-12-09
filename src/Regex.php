@@ -36,7 +36,7 @@ class Regex
     /**
      * Replace "camelCaseMethod" with "camel Case Method".
      */
-    public function camelCaseSpaced(string $subject): array|string|null
+    public function camelCaseSpaced(string $subject): null|array|string
     {
         return preg_replace('/(.)([A-Z]+)/', '$1 $2', $subject);
     }
@@ -47,7 +47,7 @@ class Regex
      *  FROM table
      *  WHERE column = ?".
      */
-    public function splitClauses(string $subject): array|string|null
+    public function splitClauses(string $subject): null|array|string
     {
         return preg_replace(
             '/\b(WHERE|FROM|GROUP BY|HAVING|ORDER BY|LIMIT|OFFSET|UNION|ON DUPLICATE KEY UPDATE|VALUES|SET)\b/',
@@ -61,7 +61,7 @@ class Regex
      * "SELECT t2.id FROM t1
      *      LEFT JOIN t2 ON t2.id = t1.t2_id".
      */
-    public function splitSubClauses(string $subject): array|string|null
+    public function splitSubClauses(string $subject): null|array|string
     {
         return preg_replace(
             '/\b(INNER|OUTER|LEFT|RIGHT|FULL|CASE|WHEN|END|ELSE|AND|OR)\b/',
@@ -73,7 +73,7 @@ class Regex
     /**
      * Replace "WHERE column = ?  " with "WHERE column = ?".
      */
-    public function removeLineEndWhitespace(string $subject): array|string|null
+    public function removeLineEndWhitespace(string $subject): null|array|string
     {
         return preg_replace("/\\s+\n/", "\n", $subject);
     }
@@ -81,7 +81,7 @@ class Regex
     /**
      * Replace the string "table1.table2:column" with "table2.column".
      */
-    public function removeAdditionalJoins(string $subject): array|string|null
+    public function removeAdditionalJoins(string $subject): null|array|string
     {
         return preg_replace('/(?:[^\s]*[.:])?([^\s]+)[.:]([^\s]*)/u', '$1.$2', $subject);
     }
