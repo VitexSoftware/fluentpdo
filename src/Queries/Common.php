@@ -78,7 +78,7 @@ abstract class Common extends Base
     public function __call($name, $parameters = [])
     {
         if (!\in_array($name, $this->validMethods, true)) {
-            trigger_error('Call to invalid method '.\get_class($this)."::{$name}()", \E_USER_ERROR);
+            throw new Exception('Call to invalid method '.\get_class($this)."::{$name}()");
         }
 
         $clause = Utilities::toUpperWords($name);
