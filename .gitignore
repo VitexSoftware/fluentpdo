@@ -6,6 +6,4 @@ debian/php-vitexsoftware-fluentpdo/
 debian/debhelper-build-stamp
 debian/php-vitexsoftware-fluentpdo.substvars
 nbproject/
-
-
-.build/php-cs-fixer/.php-cs-fixer.cache
+.build/
