@@ -89,9 +89,9 @@ class Query
     public function from(?string $table = null, ?int $primaryKey = null): Select
     {
         $this->setTableName($table);
-        $table = $this->getFullTableName();
+        $tableName = $this->getFullTableName();
 
-        $query = new Select($this, $table);
+        $query = new Select($this, $tableName);
 
         if ($primaryKey !== null) {
             $tableTable = $query->getFromTable();
