@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.vitexsoftware.php_vitexsoftware_fluentpdo</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>[
+  "Apache-2.0",
+  "GPL-2.0-or-later"
+]</project_license>
+  <name>php-vitexsoftware-fluentpdo</name>
+  <summary>FluentPDO - PHP 8.1+ Edition with modern features</summary>
+  <description>
+    <p>
+      FluentPDO is a modernized PHP SQL query builder library using PDO with a smart join builder that automatically creates table joins. This version (3.x) requires PHP 8.1+ and includes modern type declarations, strict typing, and enhanced features. Key features: - Smart Join Builder: Automatically creates JOINs based on column references - Fluent Interface: Method chaining for building queries - PDO Integration: Built on top of PDO for database portability - Type Safety: Modern PHP 8.1+ with strict typing throughout - Union Types: Uses modern PHP union types where appropriate
+    </p>
+  </description>
+  <categories>
+    <category>Utility</category>
+  </categories>
+  <url type="homepage">https://github.com/VitexSoftware/php-vitexsoftware-fluentpdo</url>
+  <url type="bugtracker">https://github.com/VitexSoftware/php-vitexsoftware-fluentpdo/issues</url>
+  <developer id="cz.vitexsoftware">
+    <name>VitexSoftware</name>
+  </developer>
+  <content_rating type="oars-1.1"/>
+</component>
