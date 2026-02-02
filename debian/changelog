@@ -1,8 +1,15 @@
-php-vitexsoftware-fluentpdo (3.0.3) UNRELEASED; urgency=medium
+php-vitexsoftware-fluentpdo (3.0.4) UNRELEASED; urgency=medium
 
+  * PHPDoc update
+
+ -- vitex <info@vitexsoftware.cz>  Mon, 02 Feb 2026 02:56:19 +0100
+
+php-vitexsoftware-fluentpdo (3.0.3) unstable; urgency=medium
+
+  [ Vítězslav Vitex Dvořák ]
   * Debian loading issues fixed
 
- -- Vítězslav Vitex Dvořák <info@vitexsoftware.cz>  Sat, 25 Oct 2025 13:51:14 +0200
+ -- vitex <info@vitexsoftware.cz>  Mon, 02 Feb 2026 02:56:09 +0100
 
 php-vitexsoftware-fluentpdo (3.0.0) unstable; urgency=medium
 

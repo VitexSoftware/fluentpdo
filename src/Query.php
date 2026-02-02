@@ -3,9 +3,18 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the EaseCore package.
+ * This file is part of the FluentPDO package.
  *
- * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ * FluentPDO is a quick and light PHP library for rapid query building. It features a smart join builder, which automatically creates table joins.
+ *
+ * For more information see readme.md
+ *
+ * @link      https://github.com/VitexSoftware/fluentpdo
+ * @author    Chris Bornhoft, start@env.ms
+ * @copyright 2012-2020 envms - Chris Bornhoft, Marek Lichtner
+ * @license   https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License, version 3.0
+ *
+ * (G) 2025-2026 Vítězslav Dvořák <info@vitexsoftware.cz>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,41 +29,54 @@ use Envms\FluentPDO\Queries\Update;
 use PDO;
 
 /**
- * FluentPDO is a quick and light PHP library for rapid query building. It features a smart join builder, which automatically creates table joins.
+ * FluentPDO Query Builder.
+ *
+ * FluentPDO is a quick and light PHP library for rapid query building.
+ * It features a smart join builder, which automatically creates table joins.
  *
  * For more information see readme.md
  *
- * @see      https://github.com/envms/fluentpdo
+ * @see      https://github.com/VitexSoftware/fluentpdo
  *
  * @author    Chris Bornhoft, start@env.ms
+ * @author    Vítězslav Dvořák <info@vitexsoftware.cz>
  * @copyright 2012-2020 envms - Chris Bornhoft, Marek Lichtner
+ * @copyright 2025-2026 VitexSoftware
  * @license   https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License, version 3.0
  */
 
 /**
- * Class Query.
+ * Main Query class for FluentPDO.
  *
- * @method debug(Queries\Base $param)
+ * @method debug(Queries\Base $param) Enable debug mode for query execution
  */
 class Query
 {
     /**
-     * @var bool|callable
+     * Debug mode setting.
+     *
+     * @var bool|callable Debug flag or callable function for custom debug handling
      */
     public mixed $debug = false;
 
     /**
-     * @var bool - Determines whether to convert types when fetching rows from Select
+     * Type conversion setting for read operations.
+     *
+     * @var bool Determines whether to convert types when fetching rows from Select
      */
     public bool $convertRead = false;
 
     /**
-     * @var bool - Determines whether to convert types within Base::buildParameters()
+     * Type conversion setting for write operations.
+     *
+     * @var bool Determines whether to convert types within Base::buildParameters()
      */
     public bool $convertWrite = false;
 
     /**
-     * @var bool - If a query errors, this determines how to handle it
+     * Exception handling setting.
+     *
+     * @var bool If a query errors, this determines how to handle it
      */
     public bool $exceptionOnError = false;
     protected \PDO $pdo;
@@ -65,6 +87,9 @@ class Query
 
     /**
      * Query constructor.
+     *
+     * @param \PDO           $pdo       PDO database connection instance
+     * @param null|Structure $structure Optional structure for table relationships
      */
     public function __construct(\PDO $pdo, ?Structure $structure = null)
     {
@@ -81,10 +106,12 @@ class Query
     /**
      * Create SELECT query from $table.
      *
-     * @param ?string $table      - db table name
-     * @param ?int    $primaryKey - return one row by primary key
+     * @param null|string $table      Database table name
+     * @param null|int    $primaryKey Return one row by primary key
      *
-     * @throws Exception
+     * @throws Exception When table name is invalid
+     *
+     * @return Select SELECT query builder instance
      */
     public function from(?string $table = null, ?int $primaryKey = null): Select
     {
@@ -106,9 +133,12 @@ class Query
     /**
      * Create INSERT INTO query.
      *
-     * @param array $values - accepts one or multiple rows, @see docs
+     * @param null|string $table  Database table name
+     * @param array       $values Accepts one or multiple rows of data to insert
      *
-     * @throws Exception
+     * @throws Exception When table name is invalid
+     *
+     * @return Insert INSERT query builder instance
      */
     public function insertInto(?string $table = null, array $values = []): Insert
     {
@@ -121,9 +151,13 @@ class Query
     /**
      * Create UPDATE query.
      *
-     * @param array|string $set
+     * @param null|string  $table      Database table name
+     * @param array|string $set        Column-value pairs to update or SET clause string
+     * @param null|int     $primaryKey Update only row with this primary key
      *
-     * @throws Exception
+     * @throws Exception When table name is invalid
+     *
+     * @return Update UPDATE query builder instance
      */
     public function update(?string $table = null, $set = [], ?int $primaryKey = null): Update
     {
@@ -145,9 +179,12 @@ class Query
     /**
      * Create DELETE query.
      *
-     * @param ?int $primaryKey delete only row by primary key
+     * @param null|string $table      Database table name
+     * @param null|int    $primaryKey Delete only row by primary key
      *
-     * @throws Exception
+     * @throws Exception When table name is invalid
+     *
+     * @return Delete DELETE query builder instance
      */
     public function delete(?string $table = null, ?int $primaryKey = null): Delete
     {
@@ -166,6 +203,13 @@ class Query
 
     /**
      * Create DELETE FROM query.
+     *
+     * @param null|string $table      Database table name
+     * @param null|int    $primaryKey Delete only row by primary key
+     *
+     * @throws Exception When table name is invalid
+     *
+     * @return Delete DELETE query builder instance
      */
     public function deleteFrom(?string $table = null, ?int $primaryKey = null): Delete
     {

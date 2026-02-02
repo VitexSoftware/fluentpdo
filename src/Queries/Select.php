@@ -3,9 +3,18 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the EaseCore package.
+ * This file is part of the FluentPDO package.
  *
- * (c) Vítězslav Dvořák <info@vitexsoftware.cz>
+ * FluentPDO is a quick and light PHP library for rapid query building. It features a smart join builder, which automatically creates table joins.
+ *
+ * For more information see readme.md
+ *
+ * @link      https://github.com/VitexSoftware/fluentpdo
+ * @author    Chris Bornhoft, start@env.ms
+ * @copyright 2012-2020 envms - Chris Bornhoft, Marek Lichtner
+ * @license   https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License, version 3.0
+ *
+ * (G) 2025-2026 Vítězslav Dvořák <info@vitexsoftware.cz>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -76,6 +85,8 @@ class Select extends Common implements \Countable
 
     /**
      * Return table name from FROM clause.
+     *
+     * @return null|string The table name from FROM clause
      */
     public function getFromTable()
     {
@@ -84,6 +95,8 @@ class Select extends Common implements \Countable
 
     /**
      * Return table alias from FROM clause.
+     *
+     * @return null|string The table alias from FROM clause
      */
     public function getFromAlias()
     {
@@ -93,9 +106,11 @@ class Select extends Common implements \Countable
     /**
      * Returns a single column.
      *
-     * @throws Exception
+     * @param int $columnNumber The zero-based column index to retrieve
      *
-     * @return string
+     * @throws Exception When query execution fails
+     *
+     * @return false|string The column value or false if no data
      */
     public function fetchColumn(int $columnNumber = 0)
     {
@@ -109,11 +124,12 @@ class Select extends Common implements \Countable
     /**
      * Fetch first row or column.
      *
-     * @param string $column - column name or empty string for the whole row
+     * @param null|string $column            Column name or null for the whole row
+     * @param int         $cursorOrientation Cursor orientation for fetch operation
      *
-     * @throws Exception
+     * @throws Exception When query execution fails
      *
-     * @return mixed string, array or false if there is no row
+     * @return mixed Row data as string, array, object or false if there is no row
      */
     public function fetch(?string $column = null, int $cursorOrientation = \PDO::FETCH_ORI_NEXT)
     {
@@ -143,15 +159,15 @@ class Select extends Common implements \Countable
     }
 
     /**
-     * Fetch pairs.
+     * Fetch pairs as key-value array.
      *
-     * @param mixed $key
-     * @param mixed $value
-     * @param mixed $object
+     * @param mixed $key    The column name or expression to use as array keys
+     * @param mixed $value  The column name or expression to use as array values
+     * @param mixed $object Whether to fetch as objects or arrays
      *
-     * @throws Exception
+     * @throws Exception When query execution fails
      *
-     * @return array|\PDOStatement
+     * @return array|false|\PDOStatement Array of key-value pairs or PDOStatement on success, false on failure
      */
     public function fetchPairs($key, $value, $object = false)
     {
@@ -163,14 +179,14 @@ class Select extends Common implements \Countable
     }
 
     /**
-     * Fetch all row.
+     * Fetch all rows.
      *
-     * @param string $index      - specify index column. Allows for data organization by field using 'field[]'
-     * @param string $selectOnly - select columns which could be fetched
+     * @param string $index      Specify index column. Allows for data organization by field using 'field[]'
+     * @param string $selectOnly Select specific columns which should be fetched
      *
-     * @throws Exception
+     * @throws Exception When query execution fails
      *
-     * @return array|bool -  fetched rows
+     * @return array|bool Array of fetched rows or false on failure
      */
     public function fetchAll($index = '', $selectOnly = '')
     {
