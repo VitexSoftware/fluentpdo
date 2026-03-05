@@ -1,2 +1,2 @@
 src/*                   usr/share/php/Envms/FluentPDO/
-autoload.php            usr/share/php/Envms/FluentPDO/
+debian/autoload.php     usr/share/php/Envms/FluentPDO/
