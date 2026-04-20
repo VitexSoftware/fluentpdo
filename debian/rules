@@ -1,10 +1,17 @@
 #!/usr/bin/make -f
 
+PKG_VERSION := $(shell dpkg-parsechangelog -S Version | sed 's/~.*//')
+PKG_SOURCE  := $(shell dpkg-parsechangelog -S Source)
+
 %:
 	dh $@ --with phpcomposer
 
 override_dh_install:
 	dh_install
+	sed -i "1a defined('APP_NAME') || define('APP_NAME', '$(PKG_SOURCE)');" \
+		debian/php-vitexsoftware-fluentpdo/usr/share/php/Envms/FluentPDO/autoload.php
+	sed -i "2a defined('APP_VERSION') || define('APP_VERSION', '$(PKG_VERSION)');" \
+		debian/php-vitexsoftware-fluentpdo/usr/share/php/Envms/FluentPDO/autoload.php
 	mkdir -p debian/php-vitexsoftware-fluentpdo/usr/share/pkg-php-tools/autoloaders
 	cp debian/autoloader.php debian/php-vitexsoftware-fluentpdo/usr/share/pkg-php-tools/autoloaders/php-vitexsoftware-fluentpdo
 

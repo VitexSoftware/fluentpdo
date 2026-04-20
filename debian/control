@@ -17,6 +17,7 @@ Package: php-vitexsoftware-fluentpdo
 Architecture: all
 Multi-Arch: foreign
 Depends:
+ composer,
  ${misc:Depends},
  ${phpcomposer:Debian-require}
 Provides:
