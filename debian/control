@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
 Build-Depends:
  debhelper-compat (= 13),
+ jq,
  pkg-php-tools,
  phpunit,
  php-cli
